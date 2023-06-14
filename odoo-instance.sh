@@ -109,13 +109,13 @@ sudo chown -R $user_name:$user_name "/opt/odoo/${user_name}"/*
 
 sudo mkdir "/home/deploy/scripts/${user_name}"
 sudo chown deploy:deploy "/home/deploy/scripts/${user_name}"
-echo ", /home/deploy/scripts/${user_name}/deploy-config.sh, /home/deploy/scripts/${user_name}/deploy-custom-app.sh, /home/deploy/scripts/${user_name}/deploy-src.sh" >> /etc/sudoers.d/deploy
+sudo echo "$(cat /etc/sudoers.d/deploy), /home/deploy/scripts/${user_name}/deploy-config.sh, /home/deploy/scripts/${user_name}/deploy-custom-app.sh, /home/deploy/scripts/${user_name}/deploy-src.sh" > /etc/sudoers.d/deploy
 
 # Create postgres odoo user
 sudo -i -u postgres psql -c "CREATE USER \"${user_name}\" CREATEDB;"
 
 # Update psql config
-
+sudo echo "host    all             ${user_name}         127.0.0.1/32            trust" >> /etc/postgresql/14/main/pg_hba.conf
 
 # Create odoo service
 OE_HOME_EXT_CODE="/opt/odoo/${user_name}/src"
