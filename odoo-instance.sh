@@ -7,7 +7,7 @@ fi
 
 # Set default values for options and variables
 declare -A env_map=(["p"]="PROD" ["c"]="CERT" ["d"]="DEV")
-do_update=false
+force_confirm_needed=false
 confirm_needed=true
 user_name=""
 env_var_value=""
@@ -19,7 +19,7 @@ WEBSITE_NAME=""
 while getopts "ye:o:p:lp:w:" opt; do
   case "${opt}" in
     y)
-      do_update=true
+      force_confirm_needed=true
       ;;
     e)
       if [[ "${OPTARG}" == "p" || "${OPTARG}" == "c" || "${OPTARG}" == "d" ]]; then
@@ -46,7 +46,7 @@ while getopts "ye:o:p:lp:w:" opt; do
 done
 
 # Check if confirmation is needed
-if $do_update; then
+if $force_confirm_needed; then
   confirm_needed=false
 fi
 
@@ -93,7 +93,6 @@ while [ -z "$WEBSITE_NAME" ] || [[ ! "$WEBSITE_NAME" =~ ^[a-zA-Z0-9.-]+$ ]]; do
   read -p "Enter the website name for the Nginx server: " WEBSITE_NAME
 done
 
-
 user_name="odoo-${user_name}"
 
 # Create odoo user
@@ -105,11 +104,18 @@ sudo mkdir /var/log/$user_name
 sudo chown $user_name:$user_name /var/log/$user_name
 sudo mkdir /var/backups/$user_name
 sudo chown $user_name:$user_name /var/backups/$user_name
-sudo mkdir "/opt/odoo/${user_name}"
+sudo mkdir -p "/opt/odoo/${user_name}/src"
 sudo chown -R $user_name:$user_name "/opt/odoo/${user_name}"/*
+
+sudo mkdir "/home/deploy/scripts/${user_name}"
+sudo chown deploy:deploy "/home/deploy/scripts/${user_name}"
+echo ", /home/deploy/scripts/${user_name}/deploy-config.sh, /home/deploy/scripts/${user_name}/deploy-custom-app.sh, /home/deploy/scripts/${user_name}/deploy-src.sh" >> /etc/sudoers.d/deploy
 
 # Create postgres odoo user
 sudo -i -u postgres psql -c "CREATE USER \"${user_name}\" CREATEDB;"
+
+# Update psql config
+
 
 # Create odoo service
 OE_HOME_EXT_CODE="/opt/odoo/${user_name}/src"
@@ -129,7 +135,7 @@ User=$user_name
 Group=$user_name
 RemainAfterExit=yes
 EnvironmentFile=/opt/odoo/$user_name/.bashrc
-ExecStart=/usr/bin/python3 $OE_HOME_EXT_CODE/odoo-bin --config=$OE_CONFIG_FILES/${user_name,,}.conf
+ExecStart=/opt/odoo/${user_name}/.virtualenv-$OE_USER/bin/python $OE_HOME_EXT_CODE/odoo-bin --config=$OE_CONFIG_FILES/${user_name,,}.conf
 
 [Install]
 WantedBy=multi-user.target
@@ -218,7 +224,6 @@ server {
     add_header Cache-Control "public, no-transform";
   }
   
-}
 EOF
 
 # Add the conditionally block if not prod

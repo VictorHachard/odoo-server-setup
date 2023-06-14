@@ -6,20 +6,20 @@ if ((${EUID:-0} || "$(id -u)")); then
 fi
 
 # Set default values for options and variables
-do_update=false
+force_confirm_needed=false
 confirm_needed=true
 
 # Parse command-line options
 while getopts "yw:" opt; do
   case "${opt}" in
     y)
-      do_update=true
+      force_confirm_needed=true
       ;;
   esac
 done
 
 # Check if confirmation is needed
-if $do_update; then
+if $force_confirm_needed; then
   confirm_needed=false
 fi
 

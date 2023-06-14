@@ -44,6 +44,7 @@ fi
 
 sudo -u $OE_USER bash -c "source $OE_HOME_EXT/.virtualenv-$OE_USER/bin/activate && \
                             pip3.7 install --upgrade pip && \
+                            pip3.7 install wheel && \
                             pip3.7 install -r $OE_HOME_EXT/src/requirements.txt && \
                             deactivate"
 
