@@ -79,13 +79,13 @@ Example Usage:
 One-line command for the latest release:
 
 ```sh
-sudo su -c "bash <(wget -qO- https://github.com/VictorHachard/odoo-server-setup/releases/latest/download/odoo-instance.sh) -y -e p -o prod -p 8069 -lp 8072" root
+sudo su -c "bash <(wget -qO- https://github.com/VictorHachard/odoo-server-setup/releases/latest/download/odoo-instance.sh) -y -e p -a" root
 ```
 
 One-line command for the latest version:
 
 ```sh
-sudo su -c "bash <(wget -qO- https://raw.githubusercontent.com/VictorHachard/odoo-server-setup/main/odoo-instance.sh) -y -e p -o prod -p 8069 -lp 8072" root
+sudo su -c "bash <(wget -qO- https://raw.githubusercontent.com/VictorHachard/odoo-server-setup/main/odoo-instance.sh) -y -e p -a" root
 ```
 
 ## Usage

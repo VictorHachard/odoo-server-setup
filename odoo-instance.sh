@@ -7,8 +7,12 @@ fi
 
 # Set default values for options and variables
 declare -A env_map=(["p"]="PROD" ["c"]="CERT" ["d"]="DEV")
+declare -A user_map=(["p"]="prod" ["c"]="cert" ["d"]="dev")
+declare -A port_map=(["p"]="8069" ["c"]="8079" ["d"]="8089")
+declare -A longpolling_port_map=(["p"]="8072" ["c"]="8082" ["d"]="8092")
 force_confirm_needed=false
 confirm_needed=true
+auto=false
 user_name=""
 env_var_value=""
 LONGPOLLING_PORT=""
@@ -16,10 +20,13 @@ OE_PORT=""
 WEBSITE_NAME=""
 
 # Parse command-line options
-while getopts "ye:o:p:lp:w:" opt; do
+while getopts "yae:o:p:lp:w:" opt; do
   case "${opt}" in
     y)
       force_confirm_needed=true
+      ;;
+    a)
+      auto=true
       ;;
     e)
       if [[ "${OPTARG}" == "p" || "${OPTARG}" == "c" || "${OPTARG}" == "d" ]]; then
@@ -72,22 +79,28 @@ if ! command -v psql >/dev/null 2>&1; then
 fi
 
 # Prompt for required information
-while [ -z "$user_name" ]; do
-  read -p "Enter a username (note that 'odoo-' is added as a prefix): " user_name
-done
-
 while [[ ! "$env_var_value" =~ ^(p|c|d)$ ]]; do
   read -p "Enter the environment (p - Production, c - Certification, d - Test): " env_var_value
   env_var_value_nice="${env_map[$env_var_value]}"
 done
 
-while [[ ! "$OE_PORT" =~ ^[0-9]+$ ]]; do
-  read -p "Enter the Odoo port number: " OE_PORT
-done
+if ! $auto; then
+  while [ -z "$user_name" ]; do
+    read -p "Enter a username (note that 'odoo-' is added as a prefix): " user_name
+  done
 
-while [[ ! "$LONGPOLLING_PORT" =~ ^[0-9]+$ ]]; do
-  read -p "Enter the Long Polling port number: " LONGPOLLING_PORT
-done
+  while [[ ! "$OE_PORT" =~ ^[0-9]+$ ]]; do
+    read -p "Enter the Odoo port number: " OE_PORT
+  done
+
+  while [[ ! "$LONGPOLLING_PORT" =~ ^[0-9]+$ ]]; do
+    read -p "Enter the Long Polling port number: " LONGPOLLING_PORT
+  done
+else
+  user_name="${user_map[$env_var_value]}"
+  OE_PORT="${port_map[$env_var_value]}"
+  LONGPOLLING_PORT="${longpolling_port_map[$env_var_value]}"
+fi
 
 while [ -z "$WEBSITE_NAME" ] || [[ ! "$WEBSITE_NAME" =~ ^[a-zA-Z0-9.-]+$ ]]; do
   read -p "Enter the website name for the Nginx server: " WEBSITE_NAME
@@ -135,7 +148,7 @@ User=$user_name
 Group=$user_name
 RemainAfterExit=yes
 EnvironmentFile=/opt/odoo/$user_name/.bashrc
-ExecStart=/opt/odoo/${user_name}/.virtualenv-$OE_USER/bin/python $OE_HOME_EXT_CODE/odoo-bin --config=$OE_CONFIG_FILES/${user_name,,}.conf
+ExecStart=/opt/odoo/${user_name}/.virtualenv-${user_name}/bin/python $OE_HOME_EXT_CODE/odoo-bin --config=$OE_CONFIG_FILES/${user_name,,}.conf
 
 [Install]
 WantedBy=multi-user.target
@@ -150,18 +163,19 @@ sudo systemctl enable $user_name.service
 # Create odoo nginx
 sudo mkdir /var/www/$user_name
 cat <<EOF > ~/$user_name
-server {
-  listen 80;
-  listen [::]:80;
-  server_name $WEBSITE_NAME;
-  return 301 https://\$host\$request_uri;
-}
+#server {
+#  listen 80;
+#  listen [::]:80;
+#  server_name $WEBSITE_NAME;
+#  return 301 https://\$host\$request_uri;
+#}
 
 server {
-  listen 443 ssl http2;
-  listen [::]:443 ssl http2;
-  ssl_certificate ;
-  ssl_certificate_key ;
+  listen 80;
+  #listen 443 ssl http2;
+  #listen [::]:443 ssl http2;
+  #ssl_certificate ;
+  #ssl_certificate_key ;
 
   server_name $WEBSITE_NAME;
   root /var/www/html;
@@ -237,3 +251,5 @@ echo '}' >> ~/$user_name
 
 sudo mv ~/$user_name /etc/nginx/sites-available/
 sudo ln -s /etc/nginx/sites-available/$user_name /etc/nginx/sites-enabled/$user_name
+
+sudo nginx -s reload
