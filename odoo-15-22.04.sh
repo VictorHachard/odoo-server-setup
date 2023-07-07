@@ -55,7 +55,7 @@ sudo rm wkhtmltox_0.12.6.1-2.jammy_amd64.deb
 sudo wkhtmltopdf -V
 
 # Deploy user
-sudo adduser --system --quiet --disabled-password --group deploy
+sudo adduser --system --quiet --shell=/bin/bash --disabled-password --group deploy
 mkdir /home/deploy/.ssh
 chmod 700 /home/deploy/.ssh
 touch /home/deploy/.ssh/authorized_keys
@@ -65,7 +65,7 @@ sudo mkdir /home/deploy/scripts
 sudo chown -R deploy:deploy /home/deploy/scripts
 touch /etc/sudoers.d/deploy
 echo "deploy ALL=(ALL) NOPASSWD: /bin/mv, /bin/sed, /bin/rm, /bin/chmod, /bin/chown" > /etc/sudoers.d/deploy
-sudo ssh-keygen -q -t rsa -b 4096 -f /home/deploy/.ssh/id_rsa -N "" && sudo cat /home/deploy/.ssh/id_rsa.pub >> /home/deploy/.ssh/authorized_keys
+sudo ssh-keygen -q -m PEM -t rsa -b 2048 -f /home/deploy/.ssh/id_rsa -N "" && sudo cat /home/deploy/.ssh/id_rsa.pub >> /home/deploy/.ssh/authorized_keys
 echo -e "\nSSH private key for the deploy user"
 sudo cat /home/deploy/.ssh/id_rsa
 sudo rm /home/deploy/.ssh/id_rsa 
