@@ -43,7 +43,7 @@ mkdir $DEPLOYER_HOME/$OE_USER/tmp
 sudo unzip -q $DEPLOYER_HOME/build-custom-app-$OE_USER.zip -d $DEPLOYER_HOME/$OE_USER/tmp
 sudo chown -R $OE_USER:$OE_USER $DEPLOYER_HOME/$OE_USER/tmp
 
-ODOO_ENV=$(sudo grep "^export ODOO_ENV=" /opt/odoo/$OE_USER/.bashrc | awk '{print $2}')
+ODOO_ENV=$(sudo grep "^export ODOO_ENV=" /opt/odoo/$OE_USER/.bashrc | awk -F= '{print $2}' | tr -d '"')
 
 if [[ $ODOO_ENV == "DEV" ]]; then
   sudo sed -i 's/#7B92AD/#AD7B7B/g' $DEPLOYER_HOME/$OE_USER/tmp/custom_addons/color_theme/static/src/colors.scss

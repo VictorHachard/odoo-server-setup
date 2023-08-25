@@ -43,9 +43,9 @@ if [ ! -d "$OE_HOME_EXT/.virtualenv-$OE_USER" ]; then
 fi
 
 sudo -u $OE_USER bash -c "source $OE_HOME_EXT/.virtualenv-$OE_USER/bin/activate && \
-                            pip3.7 install --upgrade pip && \
-                            pip3.7 install wheel && \
-                            pip3.7 install -r $OE_HOME_EXT/src/requirements.txt && \
+                            pip install --upgrade pip && \
+                            pip install wheel && \
+                            pip install -r $OE_HOME_EXT/src/requirements.txt && \
                             deactivate"
 
 echo -e "\n${GREEN}==== Start the Odoo service ====${NC}"
