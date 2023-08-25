@@ -128,7 +128,7 @@ sudo echo "$(cat /etc/sudoers.d/deploy), /home/deploy/scripts/${user_name}/deplo
 sudo -i -u postgres psql -c "CREATE USER \"${user_name}\" CREATEDB;"
 
 # Update psql config
-sudo echo "host    all             ${user_name}         127.0.0.1/32            trust" >> /etc/postgresql/14/main/pg_hba.conf
+sudo sed -i "/# Database administrative login by Unix domain socket/i host    all    ${user_name}    127.0.0.1/32    trust" /etc/postgresql/14/main/pg_hba.conf
 
 # Create odoo service
 OE_HOME_EXT_CODE="/opt/odoo/${user_name}/src"
