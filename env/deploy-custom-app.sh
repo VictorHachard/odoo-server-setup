@@ -39,7 +39,7 @@ OE_HOME_EXT="/opt/odoo/${OE_USER}"
 
 echo -e "\n${GREEN}==== Prepare tmp ====${NC}"
 rm -rf $DEPLOYER_HOME/$OE_USER/tmp
-mkdir $DEPLOYER_HOME/$OE_USER/tmp
+mkdir -p $DEPLOYER_HOME/$OE_USER/tmp
 sudo unzip -q $DEPLOYER_HOME/build-custom-app-$OE_USER.zip -d $DEPLOYER_HOME/$OE_USER/tmp
 sudo chown -R $OE_USER:$OE_USER $DEPLOYER_HOME/$OE_USER/tmp
 
