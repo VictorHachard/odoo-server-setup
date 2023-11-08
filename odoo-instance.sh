@@ -6,10 +6,10 @@ if ((${EUID:-0} || "$(id -u)")); then
 fi
 
 # Set default values for options and variables
-declare -A env_map=(["p"]="PROD" ["c"]="CERT" ["d"]="DEV")
-declare -A user_map=(["p"]="prod" ["c"]="cert" ["d"]="dev")
-declare -A port_map=(["p"]="8069" ["c"]="8079" ["d"]="8089")
-declare -A longpolling_port_map=(["p"]="8072" ["c"]="8082" ["d"]="8092")
+declare -A env_map=(["p"]="PROD" ["c"]="CERT" ["d"]="DEV", ["t"]="TEST")
+declare -A user_map=(["p"]="prod" ["c"]="cert" ["d"]="dev", ["t"]="test")
+declare -A port_map=(["p"]="8069" ["c"]="8079" ["d"]="8089", ["t"]="8099")
+declare -A longpolling_port_map=(["p"]="8072" ["c"]="8082" ["d"]="8092", ["t"]="9102")
 force_confirm_needed=false
 confirm_needed=true
 auto=false
@@ -29,7 +29,7 @@ while getopts "yae:o:p:lp:w:" opt; do
       auto=true
       ;;
     e)
-      if [[ "${OPTARG}" == "p" || "${OPTARG}" == "c" || "${OPTARG}" == "d" ]]; then
+      if [[ "${OPTARG}" == "p" || "${OPTARG}" == "c" || "${OPTARG}" == "d" || "${OPTARG}" == "t" ]]; then
         env_var_value="${OPTARG}"
         env_var_value_nice="${env_map[$env_var_value]}"
       else
@@ -79,8 +79,8 @@ if ! command -v psql >/dev/null 2>&1; then
 fi
 
 # Prompt for required information
-while [[ ! "$env_var_value" =~ ^(p|c|d)$ ]]; do
-  read -p "Enter the environment (p - Production, c - Certification, d - Test): " env_var_value
+while [[ ! "$env_var_value" =~ ^(p|c|d|t)$ ]]; do
+  read -p "Enter the environment (p - Production, c - Certification, d - Dev, t - Test): " env_var_value
   env_var_value_nice="${env_map[$env_var_value]}"
 done
 

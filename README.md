@@ -34,7 +34,7 @@ sudo su -c "bash <(wget -qO- https://raw.githubusercontent.com/VictorHachard/odo
 
 ## Odoo Add Environment Scripts
 
-This script sets up an Odoo instance environment. Creates an Odoo user, a PostgreSQL user, a service and configures Nginx. 
+This script sets up an Odoo instance environment. Creates an Odoo user, a PostgreSQL user, a service and configures Nginx.
 
 Here's a recap of the script:
 
@@ -54,10 +54,10 @@ Options:
 | Command | Description |
 | --- | --- |
 | y | Automatically run the script without confirmation. |
-| e ENVIRONMENT | Specify the environment (p - Production, c - Certification, d - Test). |
+| e ENVIRONMENT | Specify the environment (p - Production, c - Certification, d - Dev, t - Test). |
 | o USERNAME | Specify the Odoo username (without the 'odoo-' prefix). |
 | p PORT | Specify the Odoo port number. |
-| lp PORT | Specify the Long Polling port number. 
+| lp PORT | Specify the Long Polling port number.
 | w WEBSITE_NAME | Specify the website name for the Nginx server. |
 
 Note:
