@@ -75,3 +75,8 @@ echo -e "\nSSH private key for the deploy user"
 sudo cat /home/deploy/.ssh/id_rsa
 sudo rm /home/deploy/.ssh/id_rsa 
 sudo rm /home/deploy/.ssh/id_rsa.pub
+
+# Ubunut PSQL User
+password=$(openssl rand -base64 12)
+echo -e "\nUbuntu PSQL User password: $password"
+sudo -i -u postgres psql -c "CREATE USER ubuntu WITH ENCRYPTED PASSWORD '$password' SUPERUSER;"

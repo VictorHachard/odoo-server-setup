@@ -193,7 +193,7 @@ server {
   access_log /var/log/nginx/$user_name-access.log;
   error_log /var/log/nginx/$user_name-error.log;
 
-  client_max_body_size 1000M;
+  client_max_body_size 4000M;
 
   proxy_buffers 16 64k;
   proxy_buffer_size 128k;
