@@ -164,7 +164,7 @@ sudo systemctl enable $user_name.service
 # Create odoo nginx
 sudo mkdir /var/www/$user_name
 cat <<EOF > ~/$user_name
-map $http_upgrade $connection_upgrade {
+map \$http_upgrade \$connection_upgrade {
   default upgrade;
   ''      close;
 }
@@ -214,12 +214,12 @@ server {
 
   location /websocket {
     proxy_pass http://127.0.0.1:$LONGPOLLING_PORT;
-    proxy_set_header Upgrade $http_upgrade;
-    proxy_set_header Connection $connection_upgrade;
-    proxy_set_header X-Forwarded-Host $http_host;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    proxy_set_header X-Forwarded-Proto $scheme;
-    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header Upgrade \$http_upgrade;
+    proxy_set_header Connection \$connection_upgrade;
+    proxy_set_header X-Forwarded-Host \$http_host;
+    proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto \$scheme;
+    proxy_set_header X-Real-IP \$remote_addr;
   }
 
   location ~* .(js|css)$ {
