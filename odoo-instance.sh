@@ -201,8 +201,7 @@ server {
   proxy_connect_timeout 900s;
   proxy_send_timeout 900s;
 
-  proxy_next_upstream error timeout invalid_header http_500 http_502
-  http_503;
+  proxy_next_upstream error timeout invalid_header http_500 http_502 http_503;
 
   types {
     text/less less;
