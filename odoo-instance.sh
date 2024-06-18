@@ -6,10 +6,10 @@ if ((${EUID:-0} || "$(id -u)")); then
 fi
 
 # Set default values for options and variables
-declare -A env_map=(["p"]="PROD" ["c"]="CERT" ["d"]="DEV", ["t"]="TEST")
-declare -A user_map=(["p"]="prod" ["c"]="cert" ["d"]="dev", ["t"]="test")
-declare -A port_map=(["p"]="8069" ["c"]="8079" ["d"]="8089", ["t"]="8099")
-declare -A longpolling_port_map=(["p"]="8072" ["c"]="8082" ["d"]="8092", ["t"]="9102")
+declare -A env_map=(["p"]="PROD" ["c"]="CERT" ["d"]="DEV" ["t"]="TEST")
+declare -A user_map=(["p"]="prod" ["c"]="cert" ["d"]="dev" ["t"]="test")
+declare -A port_map=(["p"]="8069" ["c"]="8079" ["d"]="8089" ["t"]="8099")
+declare -A longpolling_port_map=(["p"]="8072" ["c"]="8082" ["d"]="8092" ["t"]="9102")
 force_confirm_needed=false
 confirm_needed=true
 auto=false
